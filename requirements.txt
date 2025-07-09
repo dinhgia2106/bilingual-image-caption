@@ -1,0 +1,31 @@
+# Core ML and Vision Libraries
+torch>=2.0.0
+torchvision>=0.15.0
+transformers>=4.35.0
+accelerate>=0.24.0
+
+# Image Processing
+Pillow>=9.5.0
+opencv-python>=4.8.0
+
+# UI Framework
+gradio>=4.0.0
+
+# Translation
+deep-translator>=1.11.4
+
+# Evaluation Metrics
+nltk>=3.8.1
+sacrebleu>=2.3.1
+
+# Data Processing
+pandas>=2.0.0
+numpy>=1.24.0
+datasets>=2.14.0
+
+# Utilities
+requests>=2.31.0
+tqdm>=4.65.0
+
+# Optional: For better performance
+bitsandbytes>=0.41.0  # For 8-bit inference if needed 
