@@ -295,12 +295,8 @@ def calculate_bleu_score(reference: str, candidate: str) -> float:
     try:
         from sacrebleu import sentence_bleu
         
-        # Convert to lowercase and tokenize
-        ref_tokens = reference.lower().split()
-        cand_tokens = candidate.lower().split()
-        
-        # Calculate BLEU score
-        score = sentence_bleu(cand_tokens, [ref_tokens])
+        # sacrebleu expects candidate as string and references as list of strings
+        score = sentence_bleu(candidate, [reference])
         return score.score
         
     except ImportError:
@@ -308,7 +304,169 @@ def calculate_bleu_score(reference: str, candidate: str) -> float:
         return calculate_word_overlap(reference, candidate)
     except Exception as e:
         logger.error(f"Failed to calculate BLEU score: {e}")
+        return calculate_word_overlap(reference, candidate)
+
+
+def calculate_cider_score(references: List[str], candidate: str) -> float:
+    """
+    Calculate CIDEr score between references and candidate text
+    
+    Args:
+        references: List of reference texts
+        candidate: Candidate text
+        
+    Returns:
+        CIDEr score
+    """
+    try:
+        import math
+        from collections import Counter, defaultdict
+        
+        def compute_tf_idf(texts):
+            """Compute TF-IDF vectors for texts"""
+            # Tokenize and count
+            doc_freq = defaultdict(int)
+            tf_docs = []
+            
+            for text in texts:
+                words = text.lower().split()
+                tf = Counter(words)
+                tf_docs.append(tf)
+                for word in set(words):
+                    doc_freq[word] += 1
+            
+            # Compute TF-IDF
+            num_docs = len(texts)
+            tfidf_docs = []
+            
+            for tf in tf_docs:
+                tfidf = {}
+                for word, count in tf.items():
+                    tf_val = count / sum(tf.values()) if sum(tf.values()) > 0 else 0
+                    idf_val = math.log(num_docs / doc_freq[word]) if doc_freq[word] > 0 else 0
+                    tfidf[word] = tf_val * idf_val
+                tfidf_docs.append(tfidf)
+            
+            return tfidf_docs
+        
+        def cosine_similarity(vec1, vec2):
+            """Compute cosine similarity between two vectors"""
+            common_words = set(vec1.keys()) & set(vec2.keys())
+            if not common_words:
+                return 0.0
+            
+            dot_product = sum(vec1[word] * vec2[word] for word in common_words)
+            norm1 = math.sqrt(sum(val**2 for val in vec1.values()))
+            norm2 = math.sqrt(sum(val**2 for val in vec2.values()))
+            
+            if norm1 == 0 or norm2 == 0:
+                return 0.0
+            
+            return dot_product / (norm1 * norm2)
+        
+        # Prepare texts
+        all_texts = references + [candidate]
+        tfidf_vecs = compute_tf_idf(all_texts)
+        
+        # Get candidate and reference vectors
+        candidate_vec = tfidf_vecs[-1]
+        ref_vecs = tfidf_vecs[:-1]
+        
+        # Calculate CIDEr score
+        similarities = [cosine_similarity(candidate_vec, ref_vec) for ref_vec in ref_vecs]
+        cider_score = sum(similarities) / len(similarities) if similarities else 0.0
+        
+        return cider_score * 10  # Scale to typical CIDEr range
+        
+    except Exception as e:
+        logger.error(f"Failed to calculate CIDEr score: {e}")
         return 0.0
+
+
+def calculate_rouge_l(reference: str, candidate: str) -> float:
+    """
+    Calculate ROUGE-L score between reference and candidate text
+    
+    Args:
+        reference: Reference text
+        candidate: Candidate text
+        
+    Returns:
+        ROUGE-L F1 score (0-100)
+    """
+    try:
+        def lcs_length(x, y):
+            """Calculate Longest Common Subsequence length"""
+            m, n = len(x), len(y)
+            dp = [[0] * (n + 1) for _ in range(m + 1)]
+            
+            for i in range(1, m + 1):
+                for j in range(1, n + 1):
+                    if x[i-1] == y[j-1]:
+                        dp[i][j] = dp[i-1][j-1] + 1
+                    else:
+                        dp[i][j] = max(dp[i-1][j], dp[i][j-1])
+            
+            return dp[m][n]
+        
+        ref_words = reference.lower().split()
+        cand_words = candidate.lower().split()
+        
+        if not ref_words or not cand_words:
+            return 0.0
+        
+        lcs_len = lcs_length(ref_words, cand_words)
+        
+        # Calculate precision and recall
+        precision = lcs_len / len(cand_words) if len(cand_words) > 0 else 0
+        recall = lcs_len / len(ref_words) if len(ref_words) > 0 else 0
+        
+        # Calculate F1 score
+        if precision + recall == 0:
+            return 0.0
+        
+        f1_score = 2 * precision * recall / (precision + recall)
+        return f1_score * 100
+        
+    except Exception as e:
+        logger.error(f"Failed to calculate ROUGE-L score: {e}")
+        return 0.0
+
+
+def evaluate_captions(references: List[str], candidates: List[str]) -> dict:
+    """
+    Evaluate captions using multiple metrics
+    
+    Args:
+        references: List of reference captions
+        candidates: List of candidate captions
+        
+    Returns:
+        Dictionary with evaluation scores
+    """
+    if len(references) != len(candidates):
+        raise ValueError("Number of references and candidates must match")
+    
+    scores = {
+        'bleu': [],
+        'cider': [],
+        'rouge_l': [],
+        'word_overlap': []
+    }
+    
+    for ref, cand in zip(references, candidates):
+        scores['bleu'].append(calculate_bleu_score(ref, cand))
+        scores['cider'].append(calculate_cider_score([ref], cand))
+        scores['rouge_l'].append(calculate_rouge_l(ref, cand))
+        scores['word_overlap'].append(calculate_word_overlap(ref, cand))
+    
+    # Calculate averages
+    avg_scores = {}
+    for metric, values in scores.items():
+        avg_scores[f'{metric}_avg'] = sum(values) / len(values) if values else 0.0
+        avg_scores[f'{metric}_scores'] = values
+    
+    return avg_scores
 
 
 def calculate_word_overlap(text1: str, text2: str) -> float:

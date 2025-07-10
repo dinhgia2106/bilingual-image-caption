@@ -1,0 +1,254 @@
+{
+  "blip2_flan_t5": {
+    "model_name": "BLIP-2 Flan-T5-XL",
+    "total_time": 69.03109431266785,
+    "avg_time": 6.903109431266785,
+    "results": [
+      {
+        "image": "000000000139.jpg",
+        "english_caption": "an image of a room with a lot of different colors",
+        "vietnamese_caption": "hình ảnh của một căn phòng có nhiều màu sắc khác nhau",
+        "generation_time": 12.750924110412598
+      },
+      {
+        "image": "000000000285.jpg",
+        "english_caption": "an image of a polar bear looking at the camera",
+        "vietnamese_caption": "hình ảnh của một con gấu bắc cực nhìn vào máy ảnh",
+        "generation_time": 6.318012475967407
+      },
+      {
+        "image": "000000000632.jpg",
+        "english_caption": "an image of a room with books in it",
+        "vietnamese_caption": "hình ảnh một căn phòng có sách trong đó",
+        "generation_time": 5.794373512268066
+      },
+      {
+        "image": "000000000724.jpg",
+        "english_caption": "a stop sign in the middle of a street",
+        "vietnamese_caption": "một dấu hiệu dừng ở giữa một con phố",
+        "generation_time": 5.649859189987183
+      },
+      {
+        "image": "000000000776.jpg",
+        "english_caption": "a black and white image of a giraffe",
+        "vietnamese_caption": "Một hình ảnh đen trắng của hươu cao cổ",
+        "generation_time": 6.789362907409668
+      },
+      {
+        "image": "000000000785.jpg",
+        "english_caption": "a man is skiing down a snowy slope",
+        "vietnamese_caption": "Một người đàn ông đang trượt tuyết xuống một con dốc tuyết",
+        "generation_time": 5.774097681045532
+      },
+      {
+        "image": "000000000802.jpg",
+        "english_caption": "an image of a bathroom with a sink and a toilet",
+        "vietnamese_caption": "hình ảnh của một phòng tắm có bồn rửa và nhà vệ sinh",
+        "generation_time": 6.95226526260376
+      },
+      {
+        "image": "000000000872.jpg",
+        "english_caption": "a man is playing baseball in a field",
+        "vietnamese_caption": "Một người đàn ông đang chơi bóng chày trên một lĩnh vực",
+        "generation_time": 6.599170446395874
+      },
+      {
+        "image": "000000000885.jpg",
+        "english_caption": "a black and white image of a tennis player",
+        "vietnamese_caption": "Một hình ảnh đen trắng của một tay vợt",
+        "generation_time": 6.262049436569214
+      },
+      {
+        "image": "000000001000.jpg",
+        "english_caption": "a group of people standing on a tennis court",
+        "vietnamese_caption": "một nhóm người đứng trên sân tennis",
+        "generation_time": 6.140979290008545
+      }
+    ],
+    "memory_usage": 0,
+    "status": "success",
+    "bleu_scores": [
+      0.0,
+      3.696719741302181,
+      4.540013809283726,
+      8.532663385913803,
+      3.3495035708457803,
+      0.0,
+      7.574347133041985,
+      9.51934081834847,
+      10.147104008451905,
+      10.552670315936318
+    ],
+    "reference_found": 10,
+    "total_images": 10,
+    "bleu_avg": 5.791236278312416
+  },
+  "git_large": {
+    "model_name": "GIT Large COCO",
+    "total_time": 54.278051137924194,
+    "avg_time": 5.427805113792419,
+    "results": [
+      {
+        "image": "000000000139.jpg",
+        "english_caption": "a woman standing in a living room next to a table.",
+        "vietnamese_caption": "Một người phụ nữ đứng trong phòng khách bên cạnh bàn.",
+        "generation_time": 6.801654815673828
+      },
+      {
+        "image": "000000000285.jpg",
+        "english_caption": "a large brown bear laying on top of a green field.",
+        "vietnamese_caption": "Một con gấu màu nâu lớn nằm trên đỉnh của một cánh đồng màu xanh lá cây.",
+        "generation_time": 5.451204299926758
+      },
+      {
+        "image": "000000000632.jpg",
+        "english_caption": "a bedroom with a bed, bookcase, and a window.",
+        "vietnamese_caption": "Một phòng ngủ với giường, tủ sách và cửa sổ.",
+        "generation_time": 6.807277202606201
+      },
+      {
+        "image": "000000000724.jpg",
+        "english_caption": "a stop sign is upside down on a street.",
+        "vietnamese_caption": "Một dấu hiệu dừng lại bị lộn ngược trên đường phố.",
+        "generation_time": 5.817206621170044
+      },
+      {
+        "image": "000000000776.jpg",
+        "english_caption": "three teddy bears are sitting together on a blue blanket.",
+        "vietnamese_caption": "Ba con gấu Teddy đang ngồi cùng nhau trên một chiếc chăn màu xanh.",
+        "generation_time": 5.222285032272339
+      },
+      {
+        "image": "000000000785.jpg",
+        "english_caption": "a woman is skiing down a snowy hill.",
+        "vietnamese_caption": "Một người phụ nữ đang trượt tuyết xuống một ngọn đồi tuyết.",
+        "generation_time": 4.285336971282959
+      },
+      {
+        "image": "000000000802.jpg",
+        "english_caption": "a kitchen with a refrigerator, stove, and cabinets.",
+        "vietnamese_caption": "Một nhà bếp với tủ lạnh, bếp và tủ.",
+        "generation_time": 4.999755144119263
+      },
+      {
+        "image": "000000000872.jpg",
+        "english_caption": "a baseball player is running to the base.",
+        "vietnamese_caption": "Một cầu thủ bóng chày đang chạy đến căn cứ.",
+        "generation_time": 4.62421178817749
+      },
+      {
+        "image": "000000000885.jpg",
+        "english_caption": "a man is playing tennis on a tennis court.",
+        "vietnamese_caption": "Một người đàn ông đang chơi tennis trên sân tennis.",
+        "generation_time": 4.76024317741394
+      },
+      {
+        "image": "000000001000.jpg",
+        "english_caption": "a group of kids standing on a tennis court.",
+        "vietnamese_caption": "Một nhóm trẻ đứng trên sân tennis.",
+        "generation_time": 5.508876085281372
+      }
+    ],
+    "memory_usage": 0,
+    "status": "success",
+    "bleu_scores": [
+      8.054496384843702,
+      3.7052472057637615,
+      12.192091596713041,
+      17.747405280050266,
+      8.606119900909883,
+      5.0735520042259505,
+      48.83499409416458,
+      10.147104008451905,
+      17.747405280050266,
+      9.287528999566801
+    ],
+    "reference_found": 10,
+    "total_images": 10,
+    "bleu_avg": 14.139594475474016
+  },
+  "git_base": {
+    "model_name": "GIT Base",
+    "total_time": 14.203685998916626,
+    "avg_time": 1.4203685998916626,
+    "results": [
+      {
+        "image": "000000000139.jpg",
+        "english_caption": "a wall on the side of a building",
+        "vietnamese_caption": "một bức tường ở bên cạnh tòa nhà",
+        "generation_time": 2.2474822998046875
+      },
+      {
+        "image": "000000000285.jpg",
+        "english_caption": "the bear is brown",
+        "vietnamese_caption": "Con gấu có màu nâu",
+        "generation_time": 1.338958501815796
+      },
+      {
+        "image": "000000000632.jpg",
+        "english_caption": "a window with white frame",
+        "vietnamese_caption": "Một cửa sổ có khung màu trắng",
+        "generation_time": 1.214186668395996
+      },
+      {
+        "image": "000000000724.jpg",
+        "english_caption": "a red and white stop sign",
+        "vietnamese_caption": "Một dấu hiệu dừng màu đỏ và trắng",
+        "generation_time": 1.3165082931518555
+      },
+      {
+        "image": "000000000776.jpg",
+        "english_caption": "three teddy bears",
+        "vietnamese_caption": "Ba con gấu Teddy",
+        "generation_time": 0.8647127151489258
+      },
+      {
+        "image": "000000000785.jpg",
+        "english_caption": "a woman skiing",
+        "vietnamese_caption": "Một người phụ nữ trượt tuyết",
+        "generation_time": 1.644960641860962
+      },
+      {
+        "image": "000000000802.jpg",
+        "english_caption": "a white stove and oven",
+        "vietnamese_caption": "một cái bếp màu trắng và lò nướng",
+        "generation_time": 1.4394962787628174
+      },
+      {
+        "image": "000000000872.jpg",
+        "english_caption": "a man wearing a green hat",
+        "vietnamese_caption": "Một người đàn ông đội mũ màu xanh lá cây",
+        "generation_time": 1.2176339626312256
+      },
+      {
+        "image": "000000000885.jpg",
+        "english_caption": "a man playing tennis",
+        "vietnamese_caption": "Một người đàn ông chơi tennis",
+        "generation_time": 1.254356861114502
+      },
+      {
+        "image": "000000001000.jpg",
+        "english_caption": "a group of people",
+        "vietnamese_caption": "một nhóm người",
+        "generation_time": 1.6653897762298584
+      }
+    ],
+    "memory_usage": 0,
+    "status": "success",
+    "bleu_scores": [
+      3.7954847898457067,
+      3.726425320974899,
+      4.234348806659263,
+      8.334503290277123,
+      2.739887961440494,
+      2.6682865255867765,
+      10.536767850900915,
+      4.167251645138561,
+      7.888842466409752,
+      10.129474235115733
+    ],
+    "reference_found": 10,
+    "total_images": 10,
+    "bleu_avg": 5.822127289234923
+  }
+}

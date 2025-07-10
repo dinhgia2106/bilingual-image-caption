@@ -1,7 +1,7 @@
 """
 Image Captioning Models
 
-This module contains wrapper classes for BLIP-2 and BLIP models
+This module contains wrapper classes for BLIP-2, BLIP and GIT models
 to generate image captions with consistent interfaces.
 """
 
@@ -9,7 +9,7 @@ import torch
 from transformers import (
     BlipProcessor, BlipForConditionalGeneration,
     Blip2Processor, Blip2ForConditionalGeneration,
-    AutoProcessor, AutoModelForCausalLM
+    AutoProcessor, GitForCausalLM
 )
 from PIL import Image
 import logging
@@ -237,31 +237,130 @@ class BLIPCaptioner(BaseCaptioner):
             return "Unable to generate caption"
 
 
+class GITCaptioner(BaseCaptioner):
+    """GIT (GenerativeImage2Text) model wrapper for image captioning"""
+    
+    def __init__(self, model_name: str = "microsoft/git-large-coco", 
+                 device: str = "auto"):
+        super().__init__(model_name, device)
+        self.load_model()
+    
+    def load_model(self):
+        """Load GIT model and processor"""
+        try:
+            logger.info(f"Loading GIT model: {self.model_name}")
+            
+            # Load processor and model
+            self.processor = AutoProcessor.from_pretrained(self.model_name)
+            self.model = GitForCausalLM.from_pretrained(
+                self.model_name,
+                torch_dtype=torch.float16 if self.device == "cuda" else torch.float32
+            )
+            self.model.to(self.device)
+            
+            logger.info(f"GIT model loaded on {self.device}")
+            
+        except Exception as e:
+            logger.error(f"Failed to load GIT model: {e}")
+            raise
+    
+    def generate_caption(self, image: Union[Image.Image, str], 
+                        prompt: Optional[str] = None,
+                        max_length: int = 50,
+                        min_length: int = 10,
+                        num_beams: int = 3,
+                        repetition_penalty: float = 1.2) -> str:
+        """
+        Generate caption for the given image using GIT
+        
+        Args:
+            image: PIL Image or path to image file
+            prompt: Optional text prompt for conditional captioning
+            max_length: Maximum length of generated caption
+            min_length: Minimum length of generated caption
+            num_beams: Number of beams for beam search
+            repetition_penalty: Penalty for repetition
+            
+        Returns:
+            Generated caption as string
+        """
+        try:
+            # Prepare inputs
+            if isinstance(image, str):
+                image = Image.open(image).convert('RGB')
+            
+            # GIT handles pixel values differently
+            inputs = self.processor(images=image, return_tensors="pt")
+            
+            # Move inputs to device
+            inputs = {k: v.to(self.device) for k, v in inputs.items()}
+            if self.device == "cuda":
+                inputs = {k: v.to(torch.float16) if v.dtype == torch.float32 else v 
+                         for k, v in inputs.items()}
+            
+            # Generate caption
+            with torch.no_grad():
+                outputs = self.model.generate(
+                    **inputs,
+                    max_length=max_length,
+                    min_length=min_length,
+                    num_beams=num_beams,
+                    repetition_penalty=repetition_penalty,
+                    do_sample=False,
+                    early_stopping=True
+                )
+            
+            # Decode caption
+            caption = self.processor.decode(outputs[0], skip_special_tokens=True)
+            
+            return caption.strip()
+            
+        except Exception as e:
+            logger.error(f"Failed to generate caption: {e}")
+            return "Unable to generate caption"
+
+
 def get_available_models() -> dict:
-    """Return dictionary of available models with their descriptions"""
+    """Get dictionary of available captioning models"""
     return {
-        "blip2-opt-2.7b": {
-            "model_name": "Salesforce/blip2-opt-2.7b",
-            "class": BLIP2Captioner,
-            "description": "BLIP-2 with OPT-2.7B language model - Best overall performance",
-            "size": "2.7B parameters"
+        'blip2_opt': {
+            'name': 'BLIP-2 OPT-2.7B',
+            'model_id': 'Salesforce/blip2-opt-2.7b',
+            'class': BLIP2Captioner,
+            'recommended': False
         },
-        "blip2-flan-t5-xl": {
-            "model_name": "Salesforce/blip2-flan-t5-xl", 
-            "class": BLIP2Captioner,
-            "description": "BLIP-2 with Flan-T5-XL language model - Good for instruction following",
-            "size": "3.9B parameters"
+        'blip2_flan_t5': {
+            'name': 'BLIP-2 Flan-T5-XL', 
+            'model_id': 'Salesforce/blip2-flan-t5-xl',
+            'class': BLIP2Captioner,
+            'recommended': True
         },
-        "blip-large": {
-            "model_name": "Salesforce/blip-image-captioning-large",
-            "class": BLIPCaptioner,
-            "description": "BLIP Large - Stable and reliable baseline",
-            "size": "470M parameters"
+        'blip_large': {
+            'name': 'BLIP Large',
+            'model_id': 'Salesforce/blip-image-captioning-large',
+            'class': BLIPCaptioner,
+            'recommended': False
         },
-        "blip-base": {
-            "model_name": "Salesforce/blip-image-captioning-base",
-            "class": BLIPCaptioner,
-            "description": "BLIP Base - Lightweight and fast",
-            "size": "247M parameters"
+        'git_large': {
+            'name': 'GIT Large COCO',
+            'model_id': 'microsoft/git-large-coco',
+            'class': GITCaptioner,
+            'recommended': True
+        },
+        'git_base': {
+            'name': 'GIT Base',
+            'model_id': 'microsoft/git-base',
+            'class': GITCaptioner,
+            'recommended': False
         }
-    } 
+    }
+
+
+def create_captioner(model_key: str, **kwargs) -> BaseCaptioner:
+    """Create captioner instance from model key"""
+    models = get_available_models()
+    if model_key not in models:
+        raise ValueError(f"Unknown model: {model_key}. Available: {list(models.keys())}")
+    
+    model_info = models[model_key]
+    return model_info['class'](model_info['model_id'], **kwargs) 
